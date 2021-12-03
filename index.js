@@ -246,18 +246,6 @@ async function run() {
             res.send(result);
         });
 
-        //Subscriptions Fee Paypal Payment Method API
-        app.post('/create-payment-intent', async (req, res) => {
-            const paymentInfo = req.body;
-            const amount = paymentInfo.price * 100;
-            const paymentIntent = await stripe.paymentIntents.create({
-                currency: 'usd',
-                amount: amount,
-                payment_method_types: ['card']
-            });
-            res.json({ clientSecret: paymentIntent.client_secret })
-        })
-
     }
     finally {
         // await client.close();
