@@ -22,8 +22,6 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// DB_USER=ImriazAuto
-// DB_PASS=RVYAPHSc7luDuHt8
 
 
 // async function verifyToken(req, res, next) {
@@ -217,16 +215,6 @@ async function run() {
             const result = await ordersCollection.updateOne(filter, updateDoc);
             res.json(result);
         })
-
-        //Update Status API
-        // app.put('/orders/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     // const filter = { _id: query };
-        //     const updateDoc = { $set: { status: 'Approved' } }
-        //     const result = await ordersCollection.updateOne(query, updateDoc);
-        //     res.json(result);
-        // });
 
         // make admin role PUT API 
         app.put('/users/admin', async (req, res) => {
