@@ -90,6 +90,19 @@ async function run() {
             res.send(result);
         });
 
+        //UPDATE my Notes
+        app.patch('/updateNote/:id', (req, res) => {
+            const id = req.params.id;
+            const note = req.body;
+            console.log(id, note)
+            notesCollection.updateOne({ _id: ObjectId(id) }, {
+                $set: { Title: note.Title, Notes: note.description }
+            })
+                .then(result => {
+                    res.send({ count: result.modifiedCount });
+                })
+        })
+
         //DELETE My Notes
         app.delete('/deleteMyNotes/:id', async (req, res) => {
             const id = req.params.id;
