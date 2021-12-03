@@ -73,7 +73,14 @@ async function run() {
         app.get('/manageAllUsers', async (req, res) => {
             const result = await usersCollection.find({}).toArray();
             res.send(result);
-            console.log(result);
+        });
+
+        //Get API for Manage My Users
+        app.get('/manageAllUsers/:email', async (req, res) => {
+            const result = await usersCollection.find({
+                email: req.params.email,
+            }).toArray();
+            res.send(result);
         });
 
         //Add Notes API
@@ -176,6 +183,28 @@ async function run() {
             res.send(result);
         });
 
+        //Get Subscription Order for Payment Method
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.findOne(query);
+            res.json(result);
+        });
+
+        //PUT Subscription Order Payment Status to Database
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    payment: payment
+                }
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        })
+
         //Update Status API
         // app.put('/orders/:id', async (req, res) => {
         //     const id = req.params.id;
@@ -217,14 +246,17 @@ async function run() {
             res.send(result);
         });
 
-        //DELETE User Account by Admin
-        // app.delete('/deleteUserAccount/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     const result = await usersCollection.deleteOne(query);
-        //     console.log("Deleting user with id ", result);
-        //     res.send(result);
-        // });
+        //Subscriptions Fee Paypal Payment Method API
+        app.post('/create-payment-intent', async (req, res) => {
+            const paymentInfo = req.body;
+            const amount = paymentInfo.price * 100;
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: 'usd',
+                amount: amount,
+                payment_method_types: ['card']
+            });
+            res.json({ clientSecret: paymentIntent.client_secret })
+        })
 
     }
     finally {
